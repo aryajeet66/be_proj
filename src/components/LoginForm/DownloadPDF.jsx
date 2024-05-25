@@ -32,29 +32,208 @@ const Login = () => {
 
   return (
     <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {errors.email && <p>{errors.email}</p>}
-        </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errors.password && <p>{errors.password}</p>}
-        </div>
-        <button type="submit">Login</button>
-      </form>
+<header>
+  <div class="headerSection">
+    <div class="logoAndName">
+      <svg>
+        <circle cx="50%" cy="50%" r="40%" stroke="black" stroke-width="3" fill="black" />
+      </svg>
+      <h1>Logo &amp; Name</h1>
     </div>
+    <div class="invoiceDetails">
+      <h2>Invoice #100</h2>
+      <p>
+        07 March 2021
+      </p>
+    </div>
+  </div>
+  <hr />
+  <div class="headerSection">
+    <div>
+      <h3>Invoice to</h3>
+      <p>
+        <b>Client Name</b>
+        <br />
+        123 Alphabet Road, Suite 01
+        <br />
+        Indianapolis, IN 46260
+        <br />
+        <a href="mailto:clientname@clientwebsite.com">
+          clientname@clientwebsite.com
+        </a>
+        <br />
+        317.123.8765
+      </p>
+    </div>
+    <div>
+      <h3>Due Date</h3>
+      <p>
+        <b>07 April 2021</b>
+      </p>
+      <h3>Amount</h3>
+      <p>
+        <b>$3,500</b>
+      </p>
+    </div>
+  </div>
+</header>
+
+<footer>
+    <a href="https://companywebsite.com">
+      companywebsite.com
+    </a>
+    <a href="mailto:company@website.com">
+      company@website.com
+    </a>
+    <span>
+      317.123.8765
+    </span>
+    <span>
+      123 Alphabet Road, Suite 01, Indianapolis, IN 46260
+    </span>
+</footer>
+
+{/* <main>
+  <table>
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Selected Choice</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <b>Location</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {selectedOption}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Area</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {formData.area}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Parking Info</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {selectedOption4}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Cuisine</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {selectedOption2}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Kitchen Type</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {selectedOption3}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Fixed Capital</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {formData.fixedCapital}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Variable Capital</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {formData.variableCapital}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Franchise Info</b>
+          <br />
+          Description goes here
+        </td>
+        <td>
+        {selectedOption5}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="summary">
+    <tr>
+      <th>
+        Subtotal
+      </th>
+      <td>
+        $1200.00
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Tax 4.7%
+      </th>
+      <td>
+        $000.00
+      </td>
+    </tr>
+    <tr class="total">
+      <th>
+        Total
+      </th>
+      <td>
+        $12,000.00
+      </td>
+    </tr>
+  </table>
+</main> */}
+
+<aside>
+  
+  <hr />
+  <div>
+    <div>
+      <b>Terms &amp; Conditions</b>
+      <p>
+        Please make payment within 30 days of issue of the invoice.
+      </p>
+    </div>
+    <div>
+      <b>Payment Options</b>
+      <ul>
+        <li>Paypal</li>
+        <li>Credit Card</li>
+      </ul>
+    </div>
+  </div>
+</aside>
+
+</div>
   );
 };
 

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './Form.css';
+import logo from '../logo.png';
 
 const Form = () => {
     const [step, setStep] = useState(1);
@@ -15,62 +16,124 @@ const Form = () => {
         fixedCapital: '',
         variableCapital: '',
         franchiseInfo: '',
+        timings: '',
     });
 
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
+    const [isOpen2, setIsOpen2] = useState(false);
+    const [isOpen3, setIsOpen3] = useState(false);
+    const [isOpen4, setIsOpen4] = useState(false);
+    const [isOpen5, setIsOpen5] = useState(false);
+    const [isOpen6, setIsOpen6] = useState(false);
 
     const [selectedOption, setSelectedOption] = useState('Select Location');
-    const [selectedOption2, setSelectedOption2] = useState('Select Cusine');
+    const [selectedOption2, setSelectedOption2] = useState('Select Cuisine');
     const [selectedOption3, setSelectedOption3] = useState('Select Kitchen Type');
     const [selectedOption4, setSelectedOption4] = useState('Select Parking');
     const [selectedOption5, setSelectedOption5] = useState('Select Franchise');
+    const [selectedOption6, setSelectedOption6] = useState('Select Timings');
+    const [selectedOption7, setSelectedOption7] = useState('Select Cuisine Type');
 
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
+    const toggleDropdown = (dropdown) => {
+        if (dropdown === 'location') setIsOpen(!isOpen);
+        if (dropdown === 'cuisine') setIsOpen2(!isOpen2);
+        if (dropdown === 'kitchenType') setIsOpen1(!isOpen1);
+        if (dropdown === 'parking') setIsOpen3(!isOpen3);
+        if (dropdown === 'franchise') setIsOpen4(!isOpen4);
+        if (dropdown === 'timings') setIsOpen5(!isOpen5);
+        if (dropdown === 'cuisineTypes') setIsOpen6(!isOpen6);
     };
 
-    const toggleDropdown1 = () => {
-        setIsOpen1(!isOpen);
+    const handleOptionClick = (option, dropdown) => {
+        if (dropdown === 'location') {
+            setSelectedOption(option);
+            setIsOpen(false);
+            fetchCuisines(option);
+            fetchTimings(option);
+            fetchCuisinesTypes(option)
+        }
+        if (dropdown === 'cuisine') {
+            setSelectedOption2(option);
+            setIsOpen2(false);
+        }
+        if (dropdown === 'kitchenType') {
+            setSelectedOption3(option);
+            setIsOpen1(false);
+        }
+        if (dropdown === 'parking') {
+            setSelectedOption4(option);
+            setIsOpen3(false);
+        }
+        if (dropdown === 'franchise') {
+            setSelectedOption5(option);
+            setIsOpen4(false);
+        }
+        if (dropdown === 'timings') {
+            setSelectedOption6(option);
+            setIsOpen5(false);
+        }
+        if (dropdown === 'cuisineTypes') {
+            setSelectedOption7(option);
+            setIsOpen6(false);
+        }
     };
 
-
-    const handleOptionClick = (option) => {
-        setSelectedOption(option);
-        setIsOpen(false);
+    const fetchCuisines = (location) => {
+        fetch(`http://127.0.0.1:5001/info?locality=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.Cuisines) {
+                    setItems(data.Cuisines);
+                } else {
+                    setItems([]);
+                }
+            })
+            .catch(error => console.error('Error fetching items:', error));
     };
 
-    const handleOptionClick2 = (option) => {
-        setSelectedOption2(option);
-        setIsOpen(false);
+    const fetchTimings = (location) => {
+        fetch(`http://127.0.0.1:5001/info?locality=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.Timings) {
+                    setTimingsItems(data.Timings);
+                } else {
+                    setTimingsItems([]);
+                }
+            })
+            .catch(error => console.error('Error fetching timings:', error));
     };
 
-    const handleOptionClick3 = (option) => {
-        setSelectedOption3(option);
-        setIsOpen1(false);
+    const fetchCuisinesTypes = (location) => {
+        fetch(`http://127.0.0.1:5001/info?locality=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data['Cuisine Types']) {
+                    setCuisineTypesItems(data['Cuisine Types']);
+                } else {
+                    setCuisineTypesItems([]);
+                }
+            })
+            .catch(error => console.error('Error fetching cusine types:', error));
     };
 
-    const handleOptionClick4 = (option) => {
-        setSelectedOption4(option);
-        setIsOpen(false);
-    };
+    useEffect(() => {
+        setItems([]);
+        setTimingsItems([]);
+        setCuisineTypesItems([]);
+    }, []);
 
-    const handleOptionClick5 = (option) => {
-        setSelectedOption5(option);
-        setIsOpen(false);
-    };
-
-    const cusine = ['Cantonese', 'Afghan', 'Ice Cream', 'Italian', 'Continental', 'British', 'Mughlai', 'Grill', 'Burmese', 'Korean', 'Healthy Food', 'Tibetan', 'Bakery', 'French', 'Vietnamese', 'South Indian', 'Wraps', 'Burger', 'Desserts', 'South American', 'Biryani', 'Hyderabadi', 'Seafood', 'North Eastern', 'European', 'Mongolian', 'Filipino', 'Tex-Mex', 'Lebanese', 'Cafe Food', 'Juices', 'Tea', 'Momos', 'Assamese', 'Spanish', 'Gujarati', 'Falafel', 'Bohri', 'Mediterranean', 'Indian', 'Steak', 'Japanese', 'Mexican', 'Parsi', 'Charcoal Chicken', 'Maharashtrian', 'Bengali', 'Bihari', 'Portuguese', 'Frozen Yogurt', 'Mangalorean', 'Pizza', 'Kashmiri', 'American', 'Mithai', 'Awadhi', 'Lucknowi', 'Asian', 'Deli', 'Street Food', 'Chinese', 'Turkish', 'BBQ', 'Indonesian', 'Beverages', 'Coffee', 'Cafe', 'Roast Chicken', 'Salad', 'Rajasthani', 'Sindhi', 'Konkan', 'Singaporean', 'Kerala', 'Modern Indian', 'Arabian', 'Andhra', 'Malwani', 'Thai', 'Sushi', 'Finger Food', 'Malaysian', 'Chettinad', 'Rolls', 'Paan', 'Greek', 'Iranian', 'Goan', 'Middle Eastern', 'North Indian', 'Sandwich', 'Kebab', 'Oriya', 'German', 'Bubble Tea', 'Bar Food', 'Brazilian', 'Nepalese', 'Fast Food']
-
-    const location = ['Pune', 'FC Road', 'Shivaji Nagar', 'Baner', 'Koregaon Park', 'Viman Nagar', 'Senapati Bapat Road', 'Kalyani Nagar', 'Kothrud', 'Pimple Saudagar', 'Dhankawadi', 'Aundh', 'Hinjawadi', 'Pimpri', 'Katraj', 'Mundhwa', 'Sinhgad Road', 'Magarpatta', 'Wakad', 'Wagholi', 'Kharadi', 'Bibvewadi', 'Kondhwa', 'Nigdi', 'Ravet', 'Erandwane', 'Sadashiv Peth', 'Chinchwad', 'Wadgaon Sheri', 'Narhe', 'Camp Area', 'Wanowrie', 'Karve Nagar', 'NIBM Road', 'Hadapsar', 'Pimple Nilakh', 'Bavdhan', 'Pashan', 'Yerawada', 'Pimple Gurav', 'Balewadi', 'Salunkhe Vihar Road', 'Warje', 'Bhosari', 'Chandan Nagar', 'Lohegaon', 'Pune-Solapur Road', 'Dhanori', 'Vishrantwadi', 'Akurdi']
-
-    const kitchenType = ['Dine in','Cloud Kitchen']
-
-    const parkingInfo = ['Yes','No']
-
-    const franchiseInfo = ['Independent','Franchise']
-
+    const [items, setItems] = useState([]);
+    const [timingsItems, setTimingsItems] = useState([]);
+    const [cuisineTypesItems, setCuisineTypesItems] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const locationOptions = ['FC Road', 'Shivaji Nagar', 'Baner', 'Koregaon Park', 'Viman Nagar', 'Senapati Bapat Road', 'Kalyani Nagar', 'Kothrud', 'Pimple Saudagar', 'Dhankawadi', 'Aundh', 'Hinjawadi', 'Pimpri', 'Katraj', 'Mundhwa', 'Sinhgad Road', 'Magarpatta', 'Wakad', 'Wagholi', 'Kharadi', 'Bibvewadi', 'Kondhwa', 'Nigdi', 'Ravet', 'Erandwane', 'Sadashiv Peth', 'Chinchwad', 'Wadgaon Sheri', 'Narhe', 'Camp Area', 'Wanowrie', 'Karve Nagar', 'NIBM Road', 'Hadapsar', 'Pimple Nilakh', 'Bavdhan', 'Pashan', 'Yerawada', 'Pimple Gurav', 'Balewadi', 'Salunkhe Vihar Road', 'Warje', 'Bhosari', 'Chandan Nagar', 'Lohegaon', 'Pune-Solapur Road', 'Dhanori', 'Vishrantwadi', 'Akurdi'];
+    const kitchenTypeOptions = ['Dine in', 'Cloud Kitchen'];
+    const parkingInfoOptions = ['Yes', 'No'];
+    const franchiseInfoOptions = ['Independent', 'Franchise'];
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -124,18 +187,60 @@ const Form = () => {
     if (showConfirmation) {
         return (
             <div id="pdfContent" className='confirmation'>
-                <h1 className='hHeader'>Confirmation</h1>
+                <header>
+                    <div className="headerSection">
+                        <div className="logoAndName">
+                            <img src={logo} className='w-16' alt="logo">
+                            </img>
+                            <h1>BE Project App</h1>
+                        </div>
+                        <div className="invoiceDetails">
+                            <p className='hHeader'>Confirmation</p>
+                        </div>
+                    </div>
+                    <hr />
+                    <div className="headerSection">
+                        <div>
+                            <p>
+                                <a href="mailto:clientname@clientwebsite.com">
+                                    arya@gmail.com
+                                </a>
+                                <br />
+                            </p>
+                        </div>
+                    </div>
+                </header>
+
                 <p>Location: {selectedOption}</p>
                 <p>Area: {formData.area}</p>
                 <p>Parking Info: {selectedOption4}</p>
+                <p>Timings: {selectedOption6}</p>
                 <p>Cuisine: {selectedOption2}</p>
+                <p>Cuisine Type: {selectedOption7} </p>
                 <p>Kitchen Type: {selectedOption3}</p>
                 <p>Fixed Capital: {formData.fixedCapital}</p>
                 <p>Variable Capital: {formData.variableCapital}</p>
                 <p>Franchise Info: {selectedOption5}</p>
+
                 <button id="previousButton" className='pButton' onClick={lastPrevStep}>Previous</button>
                 <button id="downloadButton" className='pButton' onClick={downloadPDF}>Download</button>
                 <button id="lgButton" className='logoutButton' onClick={handleLogout}>Logout</button>
+
+
+                <footer>
+                    <a href="https://companywebsite.com">
+                        companywebsite.com
+                    </a>
+                    <a href="mailto:company@website.com">
+                        company@website.com
+                    </a>
+                    <span>
+                        317.123.8765
+                    </span>
+                    <span>
+                        123 Alphabet Road, Suite 01, Indianapolis, IN 46260
+                    </span>
+                </footer>
             </div>
         );
     }
@@ -145,18 +250,18 @@ const Form = () => {
             return (
                 <div className="locInfo">
                     <h1 className='hHeader'>Location</h1>
-                    <button className="nButton" onClick={toggleDropdown}>
+                    <button className="nButton" onClick={() => toggleDropdown('location')}>
                         <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                         </img>
                         {selectedOption}
                     </button>
                     {isOpen && (
                         <ul className="dropdown-menu">
-                            {location.map((option, index) => (
+                            {locationOptions.map((option, index) => (
                                 <li
                                     key={index}
                                     className="dropdown-item"
-                                    onClick={() => handleOptionClick(option)}
+                                    onClick={() => handleOptionClick(option, 'location')}
                                 >
                                     {option}
                                 </li>
@@ -169,7 +274,7 @@ const Form = () => {
 
         case 2:
             return (
-                <div className='areaInfo'>
+                <div className='aInfo'>
                     <h1 className='hHeader'>Area and Parking Info</h1>
                     <div className="inputs">
                         <div className="input">
@@ -181,18 +286,36 @@ const Form = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <button className="nButton" onClick={toggleDropdown}>
+                        <button className="nButton" onClick={() => toggleDropdown('parking')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>
                             {selectedOption4}
                         </button>
-                        {isOpen && (
+                        {isOpen3 && (
                             <ul className="dropdown-menu">
-                                {parkingInfo.map((option, index) => (
+                                {parkingInfoOptions.map((option, index) => (
                                     <li
                                         key={index}
                                         className="dropdown-item"
-                                        onClick={() => handleOptionClick4(option)}
+                                        onClick={() => handleOptionClick(option, 'parking')}
+                                    >
+                                        {option}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <button className="nButton" onClick={() => toggleDropdown('timings')}>
+                            <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
+                            </img>
+                            {selectedOption6}
+                        </button>
+                        {isOpen5 && (
+                            <ul className="dropdown-menu">
+                                {timingsItems.map((option, index) => (
+                                    <li
+                                        key={index}
+                                        className="dropdown-item"
+                                        onClick={() => handleOptionClick(option, 'timings')}
                                     >
                                         {option}
                                     </li>
@@ -211,36 +334,56 @@ const Form = () => {
                 <div className='cInfo'>
                     <h1 className='hHeader'>Cuisine and Kitchen Type</h1>
                     <div className="inputs">
-                        <button className="nButton" onClick={toggleDropdown}>
+                        <button className="nButton" onClick={() => toggleDropdown('cuisine')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>
                             {selectedOption2}
                         </button>
-                        {isOpen && (
+                        {isOpen2 && (
                             <ul className="dropdown-menu">
-                                {cusine.map((option, index) => (
+                                {items.map((option, index) => (
                                     <li
                                         key={index}
                                         className="dropdown-item"
-                                        onClick={() => handleOptionClick2(option)}
+                                        onClick={() => handleOptionClick(option, 'cuisine')}
                                     >
                                         {option}
                                     </li>
                                 ))}
                             </ul>
                         )}
-                        <button className="nButton" onClick={toggleDropdown1}>
+
+                        <button className="nButton" onClick={() => toggleDropdown('cuisineTypes')}>
+                            <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
+                            </img>
+                            {selectedOption7}
+                        </button>
+                        {isOpen6 && (
+                            <ul className="dropdown-menu">
+                                {cuisineTypesItems.map((option, index) => (
+                                    <li
+                                        key={index}
+                                        className="dropdown-item"
+                                        onClick={() => handleOptionClick(option, 'cuisineTypes')}
+                                    >
+                                        {option}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        <button className="nButton" onClick={() => toggleDropdown('kitchenType')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>
                             {selectedOption3}
                         </button>
                         {isOpen1 && (
                             <ul className="dropdown-menu">
-                                {kitchenType.map((option, index) => (
+                                {kitchenTypeOptions.map((option, index) => (
                                     <li
                                         key={index}
                                         className="dropdown-item"
-                                        onClick={() => handleOptionClick3(option)}
+                                        onClick={() => handleOptionClick(option, 'kitchenType')}
                                     >
                                         {option}
                                     </li>
@@ -277,18 +420,18 @@ const Form = () => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <button className="nButton" onClick={toggleDropdown}>
+                        <button className="nButton" onClick={() => toggleDropdown('franchise')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>
                             {selectedOption5}
                         </button>
-                        {isOpen && (
+                        {isOpen4 && (
                             <ul className="dropdown-menu">
-                                {franchiseInfo.map((option, index) => (
+                                {franchiseInfoOptions.map((option, index) => (
                                     <li
                                         key={index}
                                         className="dropdown-item"
-                                        onClick={() => handleOptionClick5(option)}
+                                        onClick={() => handleOptionClick(option, 'franchise')}
                                     >
                                         {option}
                                     </li>
