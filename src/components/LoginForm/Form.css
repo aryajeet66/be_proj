@@ -1,7 +1,7 @@
 .confirmation,
 .locInfo,
-.areaInfo,
 .cInfo,
+.areaInfo,
 .capInfo {
   background: #fff;
   display: flex;
@@ -9,6 +9,8 @@
   margin: auto;
   margin-top: 60px;
 }
+
+
 
 
 .dropdown-menu {
@@ -88,7 +90,7 @@
   align-items: center;
   flex-direction: row;
   margin: auto;
-  margin-top: 40px;
+  margin-top: 60px;
   margin-bottom: 10px;
   width: 220px;
   height: 59px;
