@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './Form.css';
+import ReactToPrint from 'react-to-print';
 import logo from '../logo.png';
 
 const Form = () => {
@@ -18,6 +19,7 @@ const Form = () => {
         franchiseInfo: '',
         timings: '',
     });
+    const [errors, setErrors] = useState({});
 
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
@@ -51,7 +53,9 @@ const Form = () => {
             setIsOpen(false);
             fetchCuisines(option);
             fetchTimings(option);
-            fetchCuisinesTypes(option)
+            fetchCuisinesTypes(option);
+            fetchRentForTwo(option);
+            fetchRent(option);
         }
         if (dropdown === 'cuisine') {
             setSelectedOption2(option);
@@ -118,17 +122,47 @@ const Form = () => {
             .catch(error => console.error('Error fetching cusine types:', error));
     };
 
+    const fetchRentForTwo = (location) => {
+        fetch(`http://127.0.0.1:5001/info?locality=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data['Price for two']) {
+                    setRentForTwoItems(data['Price for two']);
+                } else {
+                    setRentForTwoItems([]);
+                }
+            })
+            .catch(error => console.error('Error fetching rent for two:', error));
+    };
+
+    const fetchRent = (location) => {
+        fetch(`http://127.0.0.1:5001/info?locality=${location}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data['Rent']) {
+                    setRentItems(data['Rent']);
+                } else {
+                    setRentItems([]);
+                }
+            })
+            .catch(error => console.error('Error fetching rent:', error));
+    };
+
     useEffect(() => {
         setItems([]);
         setTimingsItems([]);
         setCuisineTypesItems([]);
+        setRentForTwoItems([]);
     }, []);
 
     const [items, setItems] = useState([]);
     const [timingsItems, setTimingsItems] = useState([]);
     const [cuisineTypesItems, setCuisineTypesItems] = useState([]);
+    const [rentForTwoItems, setRentForTwoItems] = useState([]);
+    const [rentItems, setRentItems] = useState([]);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+    const allCuisine = ['Cantonese', 'Afghan', 'Ice Cream', 'Italian', 'Continental', 'British', 'Mughlai', 'Grill', 'Burmese', 'Korean', 'Healthy Food', 'Tibetan', 'Bakery', 'French', 'Vietnamese', 'South Indian', 'Wraps', 'Burger', 'Desserts', 'South American', 'Biryani', 'Hyderabadi', 'Seafood', 'North Eastern', 'European', 'Mongolian', 'Filipino', 'Tex-Mex', 'Lebanese', 'Cafe Food', 'Juices', 'Tea', 'Momos', 'Assamese', 'Spanish', 'Gujarati', 'Falafel', 'Bohri', 'Mediterranean', 'Indian', 'Steak', 'Japanese', 'Mexican', 'Parsi', 'Charcoal Chicken', 'Maharashtrian', 'Bengali', 'Bihari', 'Portuguese', 'Frozen Yogurt', 'Mangalorean', 'Pizza', 'Kashmiri', 'American', 'Mithai', 'Awadhi', 'Lucknowi', 'Asian', 'Deli', 'Street Food', 'Chinese', 'Turkish', 'BBQ', 'Indonesian', 'Beverages', 'Coffee', 'Cafe', 'Roast Chicken', 'Salad', 'Rajasthani', 'Sindhi', 'Konkan', 'Singaporean', 'Kerala', 'Modern Indian', 'Arabian', 'Andhra', 'Malwani', 'Thai', 'Sushi', 'Finger Food', 'Malaysian', 'Chettinad', 'Rolls', 'Paan', 'Greek', 'Iranian', 'Goan', 'Middle Eastern', 'North Indian', 'Sandwich', 'Kebab', 'Oriya', 'German', 'Bubble Tea', 'Bar Food', 'Brazilian', 'Nepalese', 'Fast Food']
     const locationOptions = ['FC Road', 'Shivaji Nagar', 'Baner', 'Koregaon Park', 'Viman Nagar', 'Senapati Bapat Road', 'Kalyani Nagar', 'Kothrud', 'Pimple Saudagar', 'Dhankawadi', 'Aundh', 'Hinjawadi', 'Pimpri', 'Katraj', 'Mundhwa', 'Sinhgad Road', 'Magarpatta', 'Wakad', 'Wagholi', 'Kharadi', 'Bibvewadi', 'Kondhwa', 'Nigdi', 'Ravet', 'Erandwane', 'Sadashiv Peth', 'Chinchwad', 'Wadgaon Sheri', 'Narhe', 'Camp Area', 'Wanowrie', 'Karve Nagar', 'NIBM Road', 'Hadapsar', 'Pimple Nilakh', 'Bavdhan', 'Pashan', 'Yerawada', 'Pimple Gurav', 'Balewadi', 'Salunkhe Vihar Road', 'Warje', 'Bhosari', 'Chandan Nagar', 'Lohegaon', 'Pune-Solapur Road', 'Dhanori', 'Vishrantwadi', 'Akurdi'];
     const kitchenTypeOptions = ['Dine in', 'Cloud Kitchen'];
     const parkingInfoOptions = ['Yes', 'No'];
@@ -138,6 +172,9 @@ const Form = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+        if (validate() && formData.area != null) {
+
+          }
     };
 
     const nextStep = () => {
@@ -166,22 +203,44 @@ const Form = () => {
         const Dbutton = document.getElementById('downloadButton');
         const pbutton = document.getElementById('previousButton');
         const lbutton = document.getElementById('lgButton');
+
+        // Hide buttons
         Dbutton.style.display = 'none';
         pbutton.style.display = 'none';
         lbutton.style.display = 'none';
+
+        // Get the content to convert to PDF
         const input = document.getElementById('pdfContent');
+
+        // Use html2canvas to create a canvas
         html2canvas(input).then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdf = new jsPDF('p', 'px', 'a4');
             const imgProps = pdf.getImageProperties(imgData);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+            // Add the image to the PDF
+            pdf.addImage(imgData, 'PNG', 0, -13, pdfWidth, pdfHeight);
+
+            // Save the PDF
             pdf.save('download.pdf');
+
+            // Show buttons again
+            Dbutton.style.display = 'block';
+            pbutton.style.display = 'block';
+            lbutton.style.display = 'block';
         });
-        Dbutton.style.display = 'block';
-        pbutton.style.display = 'block';
-        lbutton.style.display = 'block';
+    }
+    
+    const validate = () => {
+        let tempErrors = {};
+        tempErrors.area = formData.area ? "" : "Area is required";
+        if (formData.area) {
+            tempErrors.area = /^\d+$/.test(formData.area) ? "" : "Area is not valid";
+        }
+        setErrors(tempErrors);
+        return Object.values(tempErrors).every(x => x === "");
     };
 
     if (showConfirmation) {
@@ -195,7 +254,7 @@ const Form = () => {
                             <h1>BE Project App</h1>
                         </div>
                         <div className="invoiceDetails">
-                            <p className='hHeader'>Confirmation</p>
+                            <p className='hHeader'>Business Response Report</p>
                         </div>
                     </div>
                     <hr />
@@ -203,7 +262,7 @@ const Form = () => {
                         <div>
                             <p>
                                 <a href="mailto:clientname@clientwebsite.com">
-                                    arya@gmail.com
+
                                 </a>
                                 <br />
                             </p>
@@ -211,36 +270,80 @@ const Form = () => {
                     </div>
                 </header>
 
-                <p>Location: {selectedOption}</p>
-                <p>Area: {formData.area}</p>
-                <p>Parking Info: {selectedOption4}</p>
-                <p>Timings: {selectedOption6}</p>
-                <p>Cuisine: {selectedOption2}</p>
-                <p>Cuisine Type: {selectedOption7} </p>
-                <p>Kitchen Type: {selectedOption3}</p>
-                <p>Fixed Capital: {formData.fixedCapital}</p>
-                <p>Variable Capital: {formData.variableCapital}</p>
-                <p>Franchise Info: {selectedOption5}</p>
+                <div class="container">
+                    <div class="header">
+                        <h1 className='topHeader'>Comprehensive Report on Selected Restaurant Parameters:</h1>
+                    </div>
 
-                <button id="previousButton" className='pButton' onClick={lastPrevStep}>Previous</button>
-                <button id="downloadButton" className='pButton' onClick={downloadPDF}>Download</button>
-                <button id="lgButton" className='logoutButton' onClick={handleLogout}>Logout</button>
+                    <div class="report-section">
+                        <h2 className='headingTop'>Introduction:</h2>
+                        <p>The success of a restaurant hinges on various factors, each playing a crucial role in attracting and retaining customers. This comprehensive report delves into the importance of the selected parameters in shaping the prospects of a restaurant, providing valuable insights into user preferences and market trends.</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Location and Area:</h2>
+                        <p>The significance of {selectedOption} in the restaurant industry cannot be overstated. It directly impacts foot traffic, accessibility, and visibility. A strategically chosen location, coupled with the appropriate area size as per the target market, enhances the restaurant's chances of success. It's imperative to analyze demographic trends and competition in the vicinity to capitalize on the location advantage.</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Parking Info:</h2>
+                        <p>Convenient parking facilities, in this case {selectedOption4} can significantly influence diners' decisions, especially in urban areas where parking space is often limited. Offering ample parking or valet services can enhance customer satisfaction and encourage repeat visits, thus boosting revenue generation.</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Timings:</h2>
+                        <p>These operating hours {timingsItems[0]}, {timingsItems[1]}, {timingsItems[2]}, {timingsItems[3]}, {timingsItems[4]} of restaurant play a pivotal role in catering to diverse customer needs and preferences. Adhering to flexible timings can capture different segments of the market, including breakfast, lunch, dinner, and late-night dining. Additionally, aligning timings with peak demand periods maximizes profitability and operational efficiency.</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Price for two:</h2>
+                        <p>The price for two in this area is Rs. {rentForTwoItems}</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Cuisine, Cuisine Type, and Kitchen Type:</h2>
+                        <p>You have selected {selectedOption2} but the popular culinary offerings here are {items[0]}, {items[1]}, {items[2]}, {items[3]}, {items[4]} with cuisine type {cuisineTypesItems[0]}, {cuisineTypesItems[1]}, {cuisineTypesItems[2]}, {cuisineTypesItems[3]}, {cuisineTypesItems[4]} a restaurant are at the core of its identity and appeal. The selection of cuisine, cuisine type (e.g., authentic, fusion, vegan), and kitchen type (e.g., open, closed, exhibition) directly influences the target audience and competitive positioning. Understanding market trends and consumer preferences is vital in curating a menu that resonates with the target demographic while maintaining profitability and uniqueness.</p>
+                    </div>
+
+                    <div class="report-section">
+                        <h2 className='headingTop'>Capital Investment:</h2>
+                        <p>The allocation a capital of  {formData.fixedCapital} fixed and {formData.variableCapital} variable, is a critical determinant of the restaurant's financial viability and sustainability. While fixed capital encompasses one-time expenses such as equipment and decor, variable capital covers ongoing costs like ingredients and labor. Striking a balance between fixed and variable expenses is essential for maintaining cash flow and achieving profitability in the long run.</p>
+                        <p>The estimated monthly rent is Rs.{formData.area * rentItems}</p>
+                    </div>
 
 
-                <footer>
-                    <a href="https://companywebsite.com">
-                        companywebsite.com
-                    </a>
-                    <a href="mailto:company@website.com">
-                        company@website.com
-                    </a>
-                    <span>
-                        317.123.8765
-                    </span>
-                    <span>
-                        123 Alphabet Road, Suite 01, Indianapolis, IN 46260
-                    </span>
-                </footer>
+                    <div class="report-section">
+                        <h2 className='headingTop'>Franchise Info:</h2>
+                        <p>Opting for a franchise model of {selectedOption5} can provide access to established brand recognition, operational support, and standardized processes. However, it requires careful evaluation of franchisor reputation, fees, and contractual obligations to ensure a mutually beneficial partnership. Franchising offers scalability opportunities but demands adherence to brand standards and guidelines.</p>
+                    </div>
+
+
+
+                    <div class="conclusion-report-section">
+                        <h2 className='headingTop'>Conclusion:</h2>
+                        <p>In conclusion, the selected parameters encompass key facets of restaurant operations, each holding significance in shaping the success trajectory of the establishment. By leveraging insights derived from these factors and making informed strategic decisions, restaurant owners can effectively navigate the competitive landscape and carve a niche for themselves in the dynamic foodservice industry.</p>
+                    </div>
+                </div>
+                <div>
+                    <button id="previousButton" className='pButton' onClick={lastPrevStep}>Previous</button>
+                    <button id="downloadButton" className='pButton' onClick={downloadPDF}>Download</button>
+
+                    <button id="lgButton" className='logoutButton' onClick={handleLogout}>Logout</button>
+                    <footer className='footerForm'>
+                        <a href="https://beprojfinal.netlify.app/">
+                            Our Website
+                        </a>
+                        <a href="shindearyajeet@gmail.com">
+                            Our Mail
+                        </a>
+                        <span>
+                            Group No. 47
+                        </span>
+                        <span>
+                            Pune, India
+                        </span>
+                    </footer>
+                </div>
             </div>
         );
     }
@@ -286,6 +389,7 @@ const Form = () => {
                                 onChange={handleChange}
                             />
                         </div>
+                        {errors.area && <p className="errorMsg">{errors.area}</p>}
                         <button className="nButton" onClick={() => toggleDropdown('parking')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>
@@ -298,24 +402,6 @@ const Form = () => {
                                         key={index}
                                         className="dropdown-item"
                                         onClick={() => handleOptionClick(option, 'parking')}
-                                    >
-                                        {option}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                        <button className="nButton" onClick={() => toggleDropdown('timings')}>
-                            <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
-                            </img>
-                            {selectedOption6}
-                        </button>
-                        {isOpen5 && (
-                            <ul className="dropdown-menu">
-                                {timingsItems.map((option, index) => (
-                                    <li
-                                        key={index}
-                                        className="dropdown-item"
-                                        onClick={() => handleOptionClick(option, 'timings')}
                                     >
                                         {option}
                                     </li>
@@ -341,7 +427,7 @@ const Form = () => {
                         </button>
                         {isOpen2 && (
                             <ul className="dropdown-menu">
-                                {items.map((option, index) => (
+                                {allCuisine.map((option, index) => (
                                     <li
                                         key={index}
                                         className="dropdown-item"
@@ -352,26 +438,6 @@ const Form = () => {
                                 ))}
                             </ul>
                         )}
-
-                        <button className="nButton" onClick={() => toggleDropdown('cuisineTypes')}>
-                            <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
-                            </img>
-                            {selectedOption7}
-                        </button>
-                        {isOpen6 && (
-                            <ul className="dropdown-menu">
-                                {cuisineTypesItems.map((option, index) => (
-                                    <li
-                                        key={index}
-                                        className="dropdown-item"
-                                        onClick={() => handleOptionClick(option, 'cuisineTypes')}
-                                    >
-                                        {option}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-
                         <button className="nButton" onClick={() => toggleDropdown('kitchenType')}>
                             <img className='imgDrop' src='https://img.icons8.com/?size=100&id=26139&format=png&color=000000' alt='dd'>
                             </img>

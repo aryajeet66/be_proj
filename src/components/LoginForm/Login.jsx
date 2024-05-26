@@ -27,7 +27,6 @@ const Login = () => {
     if (password) {
       tempErrors.password = password.length >= 6 ? "" : "Password must be at least 6 characters long";
     }
-
     setErrors(tempErrors);
     return Object.values(tempErrors).every(x => x === "");
   };
@@ -36,10 +35,10 @@ const Login = () => {
     e.preventDefault();
     const account = users.find((user) => user.username === username);
 
-      if (validate() && (account.username === username && account.password === password)) {
-        localStorage.setItem("authenticated", true);
-        navigate("/Home");
-      }
+    if (validate() && (account.username === username && account.password === password)) {
+      localStorage.setItem("authenticated", true);
+      navigate("/Home");
+    }
   };
 
 

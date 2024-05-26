@@ -10,153 +10,144 @@
   margin-top: 60px;
 }
 
-
-header{
-  height:8cm;
-  padding:0 2cm;
-  position:running(header);
-  background-color:var(--header-bg-color);
+header {
+  height: 8cm;
+  padding: 0 2cm;
+  position: running(header);
+  background-color: var(--header-bg-color);
 }
 
-header .headerSection{
-  display:flex;
-  justify-content:space-between;
+.container{
+  padding: 0 4cm;
 }
 
-header .headerSection:first-child{
-  padding-top:.5cm;
+.topHeader{
+  color: #000000;
+font-size: 36px;
+font-weight: 350;
 }
 
-header .headerSection:last-child{
-  padding-bottom:.5cm;
+.headingTop{
+  color: #3c009d;
+  font-size: 36px;
+  font-weight: 350;
 }
 
-header .headerSection div:last-child{
-  width:35%;
+header .headerSection {
+  display: flex;
+  justify-content: space-between;
 }
 
-header .logoAndName{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+header .headerSection:first-child {
+  padding-top: 0.05cm;
 }
 
-header .logoAndName svg{
-  width:1.5cm;
-  height:1.5cm;
-  margin-right:.5cm;
+header .headerSection:last-child {
+  padding-bottom: 0.05cm;
 }
 
-header .headerSection .invoiceDetails{
-  padding-top:.5cm;
+header .headerSection div:last-child {
+  width: 35%;
 }
 
-header .headerSection h3{
-  margin:0 .75cm 0 0;
-  color:var(--highlight-color);
+header .logoAndName {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-header .headerSection div:last-of-type h3:last-of-type{
-  margin-top:.5cm;
+header .logoAndName svg {
+  width: 1.5cm;
+  height: 1.5cm;
+  margin-right: 0.2cm;
 }
 
-header .headerSection div p{
-  margin-top:2px;
+header .headerSection .invoiceDetails {
+  padding-top: 0.1cm;
+}
+
+header .headerSection h3 {
+  margin: 0 0.75cm 0 0;
+  color: var(--highlight-color);
+}
+
+header .headerSection div:last-of-type h3:last-of-type {
+  margin-top: 0.2cm;
+}
+
+header .headerSection div p {
+  margin-top: 0px;
 }
 
 header h1,
 header h2,
 header h3,
-header p{
-  margin:0;
+header p {
+  margin: 0;
 }
 
 header .invoiceDetails,
-header .invoiceDetails h2{
-  text-align:right;
-  font-size:1em;
-  text-transform:none;
+header .invoiceDetails h2 {
+  text-align: right;
+  font-size: 1em;
+  text-transform: none;
 }
 
 header h2,
-header h3{
-  text-transform:uppercase;
+header h3 {
+  text-transform: uppercase;
 }
 
-header hr{
-  margin:1cm 0 .5cm 0;
+header hr {
+  margin: 0cm 0 0.5cm 0;
 }
 
-footer{
-  height:3cm;
-  line-height:3cm;
-  padding:0 2cm;
-  position:running(footer);
-  background-color:var(--footer-bg-color);
-  font-size:8pt;
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
+footer {
+  height: 5m;
+  line-height: 3cm;
+  padding: 0 2cm;
+  position: running(footer);
+  background-color: var(--footer-bg-color);
+  font-size: 8pt;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
-footer a:first-child{
-  font-weight:bold;
+footer a:first-child {
+  font-weight: bold;
 }
 
-main{
-  
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: aut;
 }
 
-main table{
-  width:100%;
-  border-collapse:collapse;
+h1,
+h2 {
+  color: #333;
 }
 
-main table thead th{
-  height:1cm;
-  color:var(--highlight-color);
+hr {
+  border: 0;
+  border-top: 2px solid #ccc;
+  margin: 10px 0;
 }
 
-main table thead th:nth-of-type(2),
-main table thead th:nth-of-type(3),
-main table thead th:last-of-type{
-  width:2.5cm;
+p {
+  margin-bottom: 10px;
 }
 
-main table tbody td{
-  padding:2mm 0;
-}
-
-main table thead th:last-of-type,
-main table tbody td:last-of-type{
-  text-align:right;
-}
-
-main table th{
-  text-align:left;
-}
-
-main table.summary{
-  width:calc(40% + 2cm);
-  margin-left:60%;
-  margin-top:.5cm;
-}
-
-main table.summary tr.total{
-  font-weight:bold;
-  background-color:var(--highlight-color);
-}
-
-main table.summary th{
-  padding:4mm 0 4mm 1cm;
-}
-
-main table.summary td{
-  padding:4mm 2cm 4mm 0;
-  border-bottom:0;
+strong {
+  font-weight: bold;
 }
 
 
+
+.report-section {
+  margin-bottom:10px;
+}
 
 .dropdown-menu {
   display: flex;
@@ -217,13 +208,13 @@ main table.summary td{
   font-size: 19px;
 }
 
-.imgDrop{
-    width: 20%;
-    height: 70%;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    margin-left: 0px;
-    margin-right: 5px;
+.imgDrop {
+  width: 20%;
+  height: 70%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  margin-left: 0px;
+  margin-right: 5px;
 }
 
 .nButton,
@@ -235,7 +226,7 @@ main table.summary td{
   align-items: center;
   flex-direction: row;
   margin: auto;
-  margin-top: 60px;
+  margin-top: 30px;
   margin-bottom: 10px;
   width: 220px;
   height: 59px;
@@ -251,6 +242,7 @@ main table.summary td{
   display: flex;
   flex-direction: column;
   margin: auto;
+  text-align: center;
   margin-bottom: 60px;
   color: #3c009d;
   font-size: 48px;
@@ -261,7 +253,6 @@ main table.summary td{
 p {
   display: flex;
   flex-direction: column;
-  margin: auto;
   margin-bottom: 60px;
   color: #000000;
   font-size: 20px;
